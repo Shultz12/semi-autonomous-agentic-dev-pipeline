@@ -1,0 +1,35 @@
+{
+  "_comment": "Hook block for the Agentic Development Pipeline. `install.sh` merges these three hooks into your target settings.json automatically — this template is reference for manual setup or review. The command base shown here is the PROJECT-LEVEL form (\"${CLAUDE_PROJECT_DIR}/.claude/...\"). For a USER-LEVEL install (~/.claude), replace every \"${CLAUDE_PROJECT_DIR}/.claude/hooks/\" with \"$HOME/.claude/hooks/\" — user-level settings apply across all projects, where ${CLAUDE_PROJECT_DIR} would resolve wrong. The three hooks self-locate their support files via $0, so only the script path in the command needs to match your install level.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-bash-command.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write|NotebookEdit|Grep|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/protect-env-files.sh\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/enforce-subagent-output.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

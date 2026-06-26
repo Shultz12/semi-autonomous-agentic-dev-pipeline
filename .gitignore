@@ -1,0 +1,30 @@
+# 1. Ignore everything in the root
+/*
+
+# 2. Allow specific files in the root
+!statusline-command.py
+!.gitignore
+!README.md
+!ARCHITECTURE.md
+!INSTALL.md
+!install.sh
+!settings.template.json
+!LICENSE
+
+# 3. Allow specific directories
+!agents/
+!skills/
+!hooks/
+!documentation/
+!.github/
+
+# 4. Never ship Obsidian vault config from any whitelisted directory
+**/.obsidian/
+
+# 5. Private, project-specific developer skills — kept locally, never published
+skills/developer-skills/backend/grow-payments-api/
+documentation/grow-payments-api.guide.md
+
+# Note: docs/ is intentionally NOT whitelisted — it is the user's personal docs
+# area. The pipeline's runtime staging dir .claude/docs/vocabulary-extensions/
+# is created on demand and carries no shipped content.

@@ -1,0 +1,34 @@
+name: relative-paths-guard
+
+# Fails if a hardcoded user-level path (~/.claude, $HOME/.claude, ${HOME}/.claude)
+# reappears in pipeline source. Every such reference must be a relative `.claude/...`
+# path so the pipeline works at both project level (<project>/.claude) and user level
+# (~/.claude). Scope is the pipeline's source directories only; the root install
+# artifacts (install.sh, settings.template.json, INSTALL.md, README.md) legitimately
+# construct user-level paths and are out of scope by virtue of that scoping. The
+# illustrative diagram-design HTML assets are excluded.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded user-level .claude paths
+        run: |
+          set -u
+          pattern='~/\.claude|\$\{?HOME\}?/\.claude'
+          if git grep -nE "$pattern" -- \
+               agents skills documentation docs hooks \
+               ':(exclude)skills/diagram-design/assets/*.html'; then
+            echo ""
+            echo "::error::Hardcoded user-level .claude path found in pipeline source."
+            echo "Replace it with a relative '.claude/...' path (see the lines above)."
+            echo "The pipeline must resolve at both project level and user level."
+            exit 1
+          fi
+          echo "OK — no hardcoded ~/.claude / \$HOME/.claude paths in pipeline source."
